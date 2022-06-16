@@ -17,6 +17,7 @@ namespace XTiles
 
 		// Note: This implementation has a critical problem!
 		// What if something requests an invalid amount? (amount < 0? What about amount < _energyPerFuelUnit? Fuel is an integer!)
+		// You should handle cases like this on your own. Your block's energy API is (effectively) public. Idiot-proof it.
 		
 		// It would start normally...
 		int fuelRequired = amount / _energyPerFuelUnit;
@@ -28,7 +29,7 @@ namespace XTiles
 			{
 				// ... Check simulation: skip deducting from the fuel count if we are only simulating...
 				// NOTE:
-				// => In this situation, we are not simulating so we would need to handle that.
+				// => In this situation, we are NOT simulating so we would need to handle that.
 				// You have two options.
 				// #1: Only deduct fuel in this condition, then return energy based on the remaining amount of fuel.
 				// #2: Return 0, and don't deduct fuel (unrealistic, but friendly to fuel supplies)
@@ -44,28 +45,29 @@ namespace XTiles
 		return fuelRequired * _energyPerFuelUnit;
 	}
 
-	int GeneratorExample::ReceiveEnergy(int amount, bool simulate) 
+	constexpr int GeneratorExample::ReceiveEnergy(int amount, bool simulate)
 	{
 		return 0; // No matter what, this device will not receive any energy. Return 0 to signify that.
 	}
 
-	int GeneratorExample::GetStoredEnergy()
+	constexpr int GeneratorExample::GetStoredEnergy()
 	{
 		return 0; // Similarly, this should return 0. The device does not store energy, so when polling how much it has, it has 0.
 	}
 
-	int GeneratorExample::GetMaxStoredEnergy()
+	constexpr int GeneratorExample::GetMaxStoredEnergy()
 	{
 		return 0; // Same as above. Can't store, amount is 0.
 	}
 
-	bool GeneratorExample::CanExtract() 
+	constexpr bool GeneratorExample::CanExtract()
 	{
 		// For the record: This is a method instead of a field so that it can change during runtime.
+		// In this case, it doesn't, so I've added constexpr
 		return true;
 	}
 
-	bool GeneratorExample::CanReceive() 
+	constexpr bool GeneratorExample::CanReceive() 
 	{
 		return false;
 	}
